@@ -160,9 +160,9 @@ RUN     pecl install -o -f amqp-1.8.0 && \
         docker-php-ext-enable amqp
 
 # Install mongo
-# не ставится, нет под php 7
-#RUN     pecl install mongo && \
-#        docker-php-ext-enable mongo
+RUN     apt-get install -y libssl-dev && \
+        pecl install mongodb && \
+        docker-php-ext-enable mongodb
 
 RUN     sed -i -e 's/listen.*/listen = 0.0.0.0:9000/' /usr/local/etc/php-fpm.conf
 #RUN echo "expose_php=0" > /usr/local/etc/php/php.ini
