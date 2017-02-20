@@ -56,6 +56,7 @@ RUN     apt-get update && apt-get install -y --fix-missing libxslt1.1 libxslt1-d
         docker-php-ext-enable memcached
 
 # Install Redis
+# оставил на будущее, пока заработал пекловский модуль
 #ENV PHPREDIS_VERSION php7
 #RUN curl -L -o /tmp/redis.tar.gz https://github.com/phpredis/phpredis/archive/$PHPREDIS_VERSION.tar.gz \
 #    && mkdir /tmp/redis \
@@ -90,6 +91,10 @@ RUN     pecl install xdebug && \
         echo "xdebug.remote_enable=on" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini && \
         echo "xdebug.remote_autostart=on" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini && \
         echo "xdebug.remote_connect_back=on" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini && \
+        echo "xdebug.remote_handler=dbgp" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini && \
+        echo "xdebug.remote_host=xdebug-host" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini && \
+        echo "xdebug.idekey=PHPSTORM" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini && \
+        echo "xdebug.max_nesting_level=1000" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini && \
         echo "xdebug.remote_port=9001" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
 
 # Install apcu
@@ -102,9 +107,62 @@ RUN     docker-php-source extract && \
 RUN     docker-php-ext-configure intl && \
         docker-php-ext-install intl
 
-# Install mongodb
-#RUN     pecl install mongodb && \
-#        docker-php-ext-enable mongodb
+# Install xhprof
+# не ставится, нет под php 7
+#RUN     curl -L https://github.com/preinheimer/xhprof/tarball/3bbf52e | tar xz && \
+#        mv preinheimer-xhprof-3bbf52e /opt/xhprof && \
+#        cd /opt/xhprof/extension && \
+#        phpize && \
+#        ./configure && \
+#        make && \
+#        make install
+# Install propro
+RUN     pecl install propro && \
+        docker-php-ext-enable propro
+# Install protobuf
+# не ставится
+#RUN     pecl install -o -f protobuf && \
+#        docker-php-ext-enable protobuf
+# Install grpc
+RUN     pecl install grpc && \
+        docker-php-ext-enable grpc
+
+# Install amqp
+# не имеет смысла, т.к. старая версия либы в репе
+#RUN     apt-get install -y librabbitmq-dev librabbitmq1 &&\
+  # INSTALL PACKAGES DEPENDENCIES
+ENV     LIBRABBITC_VERSION 0.8.0
+
+
+#RUN     mkdir /pkg
+RUN     wget https://github.com/alanxz/rabbitmq-c/releases/download/v$LIBRABBITC_VERSION/rabbitmq-c-$LIBRABBITC_VERSION.tar.gz && \
+        tar -zxvf rabbitmq-c-$LIBRABBITC_VERSION.tar.gz && \
+        cd rabbitmq-c-$LIBRABBITC_VERSION && \
+        apt-get install automake -y && \
+        apt-get install sudo  -y && \
+        autoreconf -i && ./configure && make && sudo make install
+
+# CREATE PACKAGE
+#ENV AMQP_VERSION 1.8.0
+#RUN     apt-get install -y checkinstall
+#RUN     cd /tmp && wget -q https://pecl.php.net/get/amqp-$AMQP_VERSION.tgz && \
+#        tar -zxvf amqp-$AMQP_VERSION.tgz && \
+#        cd amqp-$AMQP_VERSION && \
+#        phpize && \
+#        ./configure LIBS=/usr/lib/librabbitmq.so.4.2.0 && \
+#        checkinstall -y --install=no --pkgname='php7.1-amqp' --pkgversion='$AMQP_VERSION-aig' --pkggroup='php' --pkgsource='https://github.com/pdezwart/php-amqp' --maintainer='Marcelo Almeida \<marcelo.almeida@jumia.com\>' --requires='php7.1-common \(\>= 7.0.7\), librabbitmq1 \(\>= $LIBRABBITC_VERSION\)' --include=include_etc
+#
+#RUN     docker-php-ext-enable amqp
+
+# Install other extensions
+RUN     pecl install -o -f amqp-1.8.0 && \
+        rm -rf /tmp/pear && \
+        docker-php-ext-enable amqp
+
+# Install mongo
+# не ставится, нет под php 7
+#RUN     pecl install mongo && \
+#        docker-php-ext-enable mongo
 
 RUN     sed -i -e 's/listen.*/listen = 0.0.0.0:9000/' /usr/local/etc/php-fpm.conf
 #RUN echo "expose_php=0" > /usr/local/etc/php/php.ini
