@@ -64,3 +64,15 @@ zlib
 Xdebug
 Zend OPcache
 ```
+
+#### docker
+Компиляция
+```
+make build
+docker images
+```
+ищем последний образ, копируем его ID, пусть это будет 44209fd00e79
+```
+docker tag 2c743702aa9b 10.93.40.181:5000/groall/php-fpm-7.1:0.3
+docker push 10.93.40.181:5000/groall/php-fpm-7.1:0.3
+```

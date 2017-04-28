@@ -8,9 +8,9 @@ RUN     mv /etc/localtime /etc/localtime-old && \
 
 # Install programms
 RUN     apt-get update && apt-get install -y --no-install-recommends \
-libfreetype6-dev libgd-dev libpng12-dev libjpeg-dev libjpeg62-turbo-dev \
+        libfreetype6-dev libgd-dev libpng12-dev libjpeg-dev libjpeg62-turbo-dev \
         pdftk gcc make g++ build-essential tcl wget git tzdata curl zip nano ca-certificates inotify-tools pwgen gnumeric \
-        p7zip-full mysql-client autoconf libtool make locales \
+        p7zip-full mysql-client autoconf libtool make locales ssh openssh-client\
 # and libs
         libpcre3-dev libevent-dev librabbitmq1 librabbitmq-dev libcurl3 \
         libxml2-dev libicu-dev libbz2-dev && \
