@@ -2,6 +2,9 @@ FROM php:7.1-fpm
 
 MAINTAINER      groall <groall@nodasoft.com>
 
+# Let the conatiner know that there is no tty
+ENV     DEBIAN_FRONTEND noninteractive
+
 # Set time
 RUN     mv /etc/localtime /etc/localtime-old && \
         ln -s /usr/share/zoneinfo/Europe/Moscow /etc/localtime

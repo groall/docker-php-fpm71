@@ -71,8 +71,8 @@ Zend OPcache
 make build
 docker images
 ```
-ищем последний образ, копируем его ID, пусть это будет 44209fd00e79
+ищем последний образ, копируем его ID, пусть это будет 43392af1c789
 ```
-docker tag 2c743702aa9b 10.93.40.181:5000/groall/php-fpm-7.1:0.3
-docker push 10.93.40.181:5000/groall/php-fpm-7.1:0.3
+docker tag 43392af1c789 registry.nodasoft.com/groall/php-fpm-7.1:0.4
+docker push registry.nodasoft.com/groall/php-fpm-7.1:0.4
 ```
